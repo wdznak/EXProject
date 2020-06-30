@@ -1,0 +1,11 @@
+﻿@model System.Collections.Generic.ICollection<string>
+@{
+    ViewData["Title"] = "Connections";
+}
+
+<h1>Connections</h1>
+@foreach(var connection in Model)
+{
+    @connection <br />
+}
+
