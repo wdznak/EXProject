@@ -10,7 +10,7 @@ namespace MVCClient.BackgroundHosts
 {
     public class FileStorage : IStorage
     {
-        private static readonly int _MAXFILESIZE = 50000;
+        private static readonly int _MAXFILESIZE = 32000000;
         private readonly ILogger<FileStorage> _logger;
         private string _path;
         private string _fullPath;

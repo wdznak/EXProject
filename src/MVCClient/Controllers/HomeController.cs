@@ -40,38 +40,38 @@ namespace MVCClient.Controllers
             return SignOut("Cookies", "oidc");
         }
 
-        [Route("api")]
-        public async Task<IActionResult> CallApi()
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            var client = new HttpClient();
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-            var content = await client.GetStringAsync("https://localhost:5003/identity");
-            ViewBag.Json = JArray.Parse(content).ToString();
-
-            return View("json");
-        }
-
         public IActionResult Connections([FromServices] ConnectionsManager manager)
         {
+            ConnectionsModel model = new ConnectionsModel();
             ICollection<string> openConnections = manager.GetConnections();
-            return View(openConnections);
+
+            foreach (var connection in openConnections)
+            {
+                model.activeConnections.Add(new BinanceConnectionModel { Symbol = connection });
+            }
+
+            return View(model);
         }
 
-        [Route("websocket")]
-        public IActionResult ConnectSocket([FromServices] BackgroundWSQueue service)
+        [HttpGet]
+        public IActionResult AddConnection()
+        {
+            return View();
+        }
+
+        public IActionResult AddConnection([FromServices] BackgroundWSQueue service, BinanceConnectionModel model)
         {
             BinanceConnection connection = new BinanceConnection()
             {
-                Address = "wss://stream.binance.com:9443/stream?streams=btcusdt@depth/btcusdt@trade",
-                Description = "USDT-BTC trades, depth",
-                DepthAddress = "https://www.binance.com/api/v1/depth?symbol=BTCUSDT&limit=1000",
-                Symbol = "USDT-BTC"
+                Address = model.Address,
+                Description = model.Description,
+                DepthAddress = model.DepthAddress,
+                Symbol = model.Symbol
             };
+
             service.QueueBackgroundWS(connection);
-            return View("Connections", connection);
+
+            return RedirectToAction("Connections");
         }
 
         public IActionResult Privacy()

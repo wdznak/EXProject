@@ -1,11 +1,61 @@
-﻿@model System.Collections.Generic.ICollection<string>
+﻿@model MVCClient.Models.ConnectionsModel
+
 @{
     ViewData["Title"] = "Connections";
 }
 
-<h1>Connections</h1>
-@foreach(var connection in Model)
-{
-    @connection <br />
-}
+<h4>Connections</h4>
 
+<table class="table">
+    <thead>
+        <tr>
+            <th>Active connections</th>
+            <th>Pending connections</th>
+            <th>Canceled connections</th>
+            <th>Failed connections</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model.activeConnections)
+        {
+            <tr>
+                <td>
+                    @item.Symbol
+                </td>
+            </tr>
+        }
+        @foreach (var item in Model.pendingConnections)
+        {
+            <tr>
+                <td>
+                    @item.Symbol
+                </td>
+            </tr>
+        }
+        @foreach (var item in Model.closedConnections)
+        {
+            <tr>
+                <td>
+                    @item.Symbol
+                </td>
+            </tr>
+        }
+        @foreach (var item in Model.failedConnections)
+        {
+            <tr>
+                <td>
+                    @item.Symbol
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td>@Model.activeConnections.Count</td>
+            <td>@Model.pendingConnections.Count</td>
+            <td>@Model.closedConnections.Count</td>
+            <td>@Model.failedConnections.Count</td>
+        </tr>
+    </tfoot>
+</table>
