@@ -43,7 +43,7 @@ namespace MVCClient.BackgroundHosts
             _binanceOptions = _configuration.GetSection(BinanceOptions.ExchangeName).Get<BinanceOptions>();
             _binanceOptions.Connections.ForEach(connection =>
             {
-                //_connectionsQueue.QueueBackgroundWS(connection);
+                _connectionsQueue.QueueBackgroundWS(connection);
             });
 
             await BackgroundProcessing(stoppingToken);
