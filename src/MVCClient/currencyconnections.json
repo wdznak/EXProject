@@ -6,28 +6,32 @@
         "address": "wss://stream.binance.com:9443/stream?streams=btcusdt@depth/btcusdt@trade",
         "description": "USDT-BTC trades, depth",
         "depthAddress": "https://www.binance.com/api/v1/depth?symbol=BTCUSDT&limit=1000",
-        "symbol": "USDT-BTC"
+        "symbol": "USDT-BTC",
+        "store": true
       },
       {
         "id": 2,
         "address": "wss://stream.binance.com:9443/stream?streams=ethusdt@depth/ethusdt@trade",
         "description": "USDT-ETH trades, depth",
         "depthAddress": "https://www.binance.com/api/v1/depth?symbol=ETHUSDT&limit=1000",
-        "symbol": "USDT-ETH"
+        "symbol": "USDT-ETH",
+        "store": false
       },
       {
         "id": 5,
         "address": "wss://stream.binance.com:9443/stream?streams=ethbtc@depth/ethbtc@trade",
         "description": "ETH-BTC trades, depth",
         "depthAddress": "https://www.binance.com/api/v1/depth?symbol=ETHBTC&limit=1000",
-        "symbol": "ETH-BTC"
+        "symbol": "ETH-BTC",
+        "store": false
       },
       {
         "id": 6,
         "address": "wss://stream.binance.com:9443/stream?streams=trxbtc@depth/trxbtc@trade",
         "description": "TRX-BTC trades, depth",
         "depthAddress": "https://www.binance.com/api/v1/depth?symbol=TRXBTC&limit=1000",
-        "symbol": "TRX-BTC"
+        "symbol": "TRX-BTC",
+        "store": false
       }
     ]
   }

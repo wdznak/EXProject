@@ -17,7 +17,7 @@ namespace MVCClient.BackgroundHosts
 
         public void AddConnection(BinanceConnection connection)
         {
-            _queue.QueueBackgroundWS(connection);
+            _queue.QueueWS(connection);
         }
 
         public ICollection<string> GetConnections()

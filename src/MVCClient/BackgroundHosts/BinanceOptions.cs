@@ -12,6 +12,7 @@ namespace MVCClient.BackgroundHosts
         public string Description { get; set; }
         public string DepthAddress { get; set; }
         public string Symbol { get; set; }
+        public bool Store { get; set; }
     }
 
     public class BinanceOptions

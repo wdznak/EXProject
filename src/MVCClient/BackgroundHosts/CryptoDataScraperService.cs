@@ -27,7 +27,7 @@ namespace MVCClient.BackgroundHosts
         private readonly ILogger<CryptoDataScraperService> _logger;
         private readonly IConfiguration _configuration;
         private BinanceOptions _binanceOptions { get; set; }
-        private ConcurrentDictionary<String, WSScraperData> _wsConnections = new ConcurrentDictionary<string, WSScraperData>();
+        private ConcurrentDictionary<string, WSScraperData> _wsConnections = new ConcurrentDictionary<string, WSScraperData>();
         private IServiceScopeFactory _scopeFactory;
 
         public CryptoDataScraperService(BackgroundWSQueue connectionsQueue, ILogger<CryptoDataScraperService> logger, IConfiguration configuration, IServiceScopeFactory scopeFactory)
@@ -43,7 +43,7 @@ namespace MVCClient.BackgroundHosts
             _binanceOptions = _configuration.GetSection(BinanceOptions.ExchangeName).Get<BinanceOptions>();
             _binanceOptions.Connections.ForEach(connection =>
             {
-                _connectionsQueue.QueueBackgroundWS(connection);
+                _connectionsQueue.QueueWS(connection);
             });
 
             await BackgroundProcessing(stoppingToken);
@@ -60,10 +60,19 @@ namespace MVCClient.BackgroundHosts
                     try
                     {
                         wsConnection = await _connectionsQueue.DequeueAsync(stoppingToken);
+                        
+                        var scraper = scope.ServiceProvider.GetRequiredService<BinanceWSScraper>();
+                        scraper.Stats = scope.ServiceProvider.GetRequiredService<StatsService>().GetStatsHelper(wsConnection.Symbol);
+                        if (wsConnection.Store)
+                        {
+                            var storage = scope.ServiceProvider.GetRequiredService<IStorage>();
+                            storage.Init(wsConnection.Symbol);
+                            scraper.Storage = storage;
+                        }
 
                         WSScraperData data = new WSScraperData()
                         {
-                            wsScraper = scope.ServiceProvider.GetRequiredService<BinanceWSScraper>()
+                            wsScraper = scraper
                         };
 
                         data.wsScraper.Init(wsConnection);
@@ -141,7 +150,6 @@ namespace MVCClient.BackgroundHosts
 
         public override async Task StopAsync(CancellationToken stoppingToken)
         {
-            
             await base.StopAsync(stoppingToken);
         }
     }

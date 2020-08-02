@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace MVCClient.BackgroundHosts
@@ -8,6 +7,7 @@ namespace MVCClient.BackgroundHosts
     {
         public static void AddWSScraper(this IServiceCollection services)
         {
+            services.AddSingleton<StatsService>();
             services.AddSingleton<BackgroundWSQueue>();
             //services.AddHostedService<CryptoDataScraperService>();
             services.AddSingleton<CryptoDataScraperService>();

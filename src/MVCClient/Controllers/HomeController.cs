@@ -69,7 +69,7 @@ namespace MVCClient.Controllers
                 Symbol = model.Symbol
             };
 
-            service.QueueBackgroundWS(connection);
+            service.QueueWS(connection);
 
             return RedirectToAction("Connections");
         }

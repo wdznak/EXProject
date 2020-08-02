@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace MVCClient.BackgroundHosts
 {
@@ -13,7 +10,7 @@ namespace MVCClient.BackgroundHosts
             new ConcurrentQueue<BinanceConnection>();
         private SemaphoreSlim _signal = new SemaphoreSlim(0);
 
-        public void QueueBackgroundWS(BinanceConnection wsItem)
+        public void QueueWS(BinanceConnection wsItem)
         {
             _wsItems.Enqueue(wsItem);
             _signal.Release();

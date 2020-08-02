@@ -13,5 +13,6 @@ namespace MVCClient.Models
         [Display(Name = "Depth address")]
         public string DepthAddress { get; set; }
         public string Symbol { get; set; }
+        public bool Store { get; set; }
     }
 }

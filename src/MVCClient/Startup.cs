@@ -1,16 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Identity;
 using MVCClient.BackgroundHosts;
+using MVCClient.Data;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace MVCClient
 {
@@ -50,6 +46,10 @@ namespace MVCClient
                 options.Scope.Add("api1");
                 options.Scope.Add("offline_access");
             });
+
+            var v = Configuration.GetConnectionString("SqliteConnection");
+            services.AddDbContext<StatsContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("SqliteConnection")));
 
             services.AddWSScraper();
         }

@@ -4,7 +4,9 @@
     ViewData["Title"] = "AddConnection";
 }
 
-<h4>Add new connection</h4>
+<h1>AddConnection</h1>
+
+<h4>BinanceConnectionModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -29,6 +31,11 @@
                 <label asp-for="Symbol" class="control-label"></label>
                 <input asp-for="Symbol" class="form-control" />
                 <span asp-validation-for="Symbol" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Store" /> @Html.DisplayNameFor(model => model.Store)
+                </label>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

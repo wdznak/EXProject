@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System.Threading;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Net.WebSockets;
 using System.Text;
-using System.IO;
-using Microsoft.AspNetCore.SignalR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MVCClient.BackgroundHosts
 {
@@ -19,22 +14,21 @@ namespace MVCClient.BackgroundHosts
         private short _reconnections = 0;
         private ILogger<BinanceWSScraper> _logger;
         private IStorage _storage;
+        private IStatsHelper _stats;
 
-        public BinanceWSScraper(ILogger<BinanceWSScraper> logger, IStorage storage)
+        public BinanceWSScraper(ILogger<BinanceWSScraper> logger)
         {
             _logger = logger;
-            _storage = storage;
         }
 
         public void Init(BinanceConnection connectionDetails)
         {
             this.connectionDetails = connectionDetails;
-            _storage.Init(this.connectionDetails.Symbol);
         }
 
         public async Task ConnectAsync(CancellationToken stoppingToken)
         {
-            while(!stoppingToken.IsCancellationRequested)
+            while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
@@ -43,7 +37,7 @@ namespace MVCClient.BackgroundHosts
                 catch (Exception ex) when (!(ex is TaskCanceledException))
                 {
                     _reconnections++;
-                    if(_reconnections >= _MAXRECONNECTION)
+                    if (_reconnections >= _MAXRECONNECTION)
                     {
                         throw;
                     }
@@ -57,7 +51,6 @@ namespace MVCClient.BackgroundHosts
             {
                 webSocket.Options.KeepAliveInterval = TimeSpan.FromSeconds(5);
 
-                Console.WriteLine("Connecting to the websocket...");
                 await webSocket.ConnectAsync(new Uri(connectionDetails.Address), stoppingToken);
 
                 var buffer = new byte[4 * 1024];
@@ -68,9 +61,20 @@ namespace MVCClient.BackgroundHosts
                 {
                     result = await webSocket.ReceiveAsync(segment, stoppingToken);
                     string msg = Encoding.UTF8.GetString(segment.Array, 0, result.Count);
-                    await _storage.WriteAsync(msg);
-                }   
+                    if(_storage != null)  await _storage.WriteAsync(msg);
+                    await _stats.PostMessageAsync(msg);
+                }
             }
+        }
+
+        public IStorage Storage
+        {
+            set { if(_storage == null) _storage = value; }
+        }
+
+        public IStatsHelper Stats
+        {
+            set { if (_stats == null) _stats = value; }
         }
     }
 }
